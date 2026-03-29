@@ -1,0 +1,89 @@
+name: Provision Azure Infrastructure (Bicep)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options: [dev, staging, prod]
+      destroy:
+        description: 'Destroy resources (use with caution!)'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  provision:
+    name: Provision (${{ github.event.inputs.environment }})
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets[format('AZURE_CREDENTIALS_{0}', upper(github.event.inputs.environment))] }}
+
+      - name: Set environment variables
+        run: |
+          echo "RG_NAME=${{ secrets.AZURE_RESOURCE_GROUP }}" >> $GITHUB_ENV
+          echo "LOCATION=${{ secrets.AZURE_LOCATION || 'eastus' }}" >> $GITHUB_ENV
+
+      - name: Create resource group (if not exists)
+        run: |
+          az group create --name ${{ env.RG_NAME }} --location ${{ env.LOCATION }} --output none
+
+      - name: Validate Bicep templates
+        run: |
+          az deployment group validate \
+            --resource-group ${{ env.RG_NAME }} \
+            --template-file infra/main.bicep \
+            --parameters \
+              environment=${{ github.event.inputs.environment }} \
+              appName=shopazure \
+              sqlAdminLogin=${{ secrets.SQL_ADMIN_LOGIN }} \
+              sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
+
+      - name: What-if (preview changes)
+        run: |
+          az deployment group what-if \
+            --resource-group ${{ env.RG_NAME }} \
+            --template-file infra/main.bicep \
+            --parameters \
+              environment=${{ github.event.inputs.environment }} \
+              appName=shopazure \
+              sqlAdminLogin=${{ secrets.SQL_ADMIN_LOGIN }} \
+              sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }} \
+              b2cTenantName=${{ secrets.AAD_B2C_TENANT_NAME || '' }} \
+              stripePublishableKey=${{ secrets.STRIPE_PUBLISHABLE_KEY || '' }}
+
+      - name: Deploy Bicep templates
+        if: github.event.inputs.destroy == 'false'
+        id: deploy
+        run: |
+          az deployment group create \
+            --resource-group ${{ env.RG_NAME }} \
+            --template-file infra/main.bicep \
+            --parameters \
+              environment=${{ github.event.inputs.environment }} \
+              appName=shopazure \
+              sqlAdminLogin=${{ secrets.SQL_ADMIN_LOGIN }} \
+              sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }} \
+              b2cTenantName=${{ secrets.AAD_B2C_TENANT_NAME || '' }} \
+              stripePublishableKey=${{ secrets.STRIPE_PUBLISHABLE_KEY || '' }} \
+            --output json > deployment-output.json
+          cat deployment-output.json
+
+      - name: Store outputs as job summary
+        run: |
+          echo "## Deployment Outputs" >> $GITHUB_STEP_SUMMARY
+          cat deployment-output.json | jq '.properties.outputs | to_entries[] | "| \(.key) | \(.value.value) |"' -r >> $GITHUB_STEP_SUMMARY
