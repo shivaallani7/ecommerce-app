@@ -17,7 +17,7 @@ interface ProductDetailProps {
 
 export const getServerSideProps: GetServerSideProps<ProductDetailProps> = async ({ params }) => {
   const slug = params?.slug as string;
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
   try {
     const res = await fetch(`${baseUrl}/products/slug/${slug}`);
     if (!res.ok) return { notFound: true };

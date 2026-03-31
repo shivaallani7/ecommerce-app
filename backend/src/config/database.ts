@@ -1,7 +1,12 @@
 import { Sequelize } from 'sequelize-typescript';
 import { env } from './env';
 import { logger } from '../utils/logger';
-import path from 'path';
+import { User } from '../models/User';
+import { Category } from '../models/Category';
+import { Product } from '../models/Product';
+import { Order } from '../models/Order';
+import { OrderItem } from '../models/OrderItem';
+import { Review } from '../models/Review';
 
 let sequelize: Sequelize;
 
@@ -15,7 +20,7 @@ export function getSequelize(): Sequelize {
       password: env.db.password,
       port: 1433,
       logging: env.isProduction ? false : (msg) => logger.debug(msg),
-      models: [path.join(__dirname, '../models')],
+      models: [User, Category, Product, Order, OrderItem, Review],
       define: {
         timestamps: true,
         underscored: false,
@@ -28,8 +33,8 @@ export function getSequelize(): Sequelize {
       },
       dialectOptions: {
         options: {
-          encrypt: true,
-          trustServerCertificate: false,
+          encrypt: false,
+          trustServerCertificate: true,
           enableArithAbort: true,
           requestTimeout: 30000,
         },
@@ -46,8 +51,8 @@ export async function connectDatabase(): Promise<void> {
     logger.info('Azure SQL Database connection established.');
 
     if (!env.isProduction) {
-      await db.sync({ alter: true });
-      logger.info('Database models synchronized (alter mode).');
+      await db.sync();
+      logger.info('Database models synchronized.');
     }
   } catch (err) {
     logger.error('Unable to connect to Azure SQL Database:', err);

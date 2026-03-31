@@ -14,11 +14,15 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.azureedge.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
     ],
   },
 
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1',
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
     NEXT_PUBLIC_AAD_B2C_TENANT: process.env.NEXT_PUBLIC_AAD_B2C_TENANT || '',
     NEXT_PUBLIC_AAD_B2C_CLIENT_ID: process.env.NEXT_PUBLIC_AAD_B2C_CLIENT_ID || '',
