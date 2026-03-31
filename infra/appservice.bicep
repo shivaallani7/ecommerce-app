@@ -21,8 +21,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   location: location
   tags: tags
   sku: {
-    name: environment == 'prod' ? 'P2v3' : 'B2'
-    tier: environment == 'prod' ? 'PremiumV3' : 'Basic'
+    name: environment == 'prod' ? 'P2v3' : environment == 'staging' ? 'B1' : 'F1'
+    tier: environment == 'prod' ? 'PremiumV3' : environment == 'staging' ? 'Basic' : 'Free'
   }
   kind: 'linux'
   properties: {
@@ -45,7 +45,7 @@ resource backendApp 'Microsoft.Web/sites@2023-01-01' = {
       linuxFxVersion: 'NODE|20-lts'
       nodeVersion: '~20'
       appCommandLine: 'node dist/index.js'
-      alwaysOn: environment != 'dev'
+      alwaysOn: environment == 'prod'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       http20Enabled: true
@@ -101,7 +101,7 @@ resource frontendApp 'Microsoft.Web/sites@2023-01-01' = {
     siteConfig: {
       linuxFxVersion: 'NODE|20-lts'
       appCommandLine: 'node server.js'
-      alwaysOn: environment != 'dev'
+      alwaysOn: environment == 'prod'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       http20Enabled: true
