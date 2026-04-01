@@ -13,8 +13,8 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
   try {
     const [productsRes, categoriesRes] = await Promise.all([
-      fetch(`${baseUrl}/products/featured`),
-      fetch(`${baseUrl}/categories`),
+      fetch(`${baseUrl}/products/featured`, { signal: AbortSignal.timeout(5000) }),
+      fetch(`${baseUrl}/categories`, { signal: AbortSignal.timeout(5000) }),
     ]);
     const productsData = await productsRes.json();
     const categoriesData = await categoriesRes.json();
