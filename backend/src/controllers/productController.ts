@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { body, query } from 'express-validator';
+import { body } from 'express-validator';
 import { Op } from 'sequelize';
 import { Product, Category, Review, User } from '../models';
 import { AppError } from '../utils/AppError';

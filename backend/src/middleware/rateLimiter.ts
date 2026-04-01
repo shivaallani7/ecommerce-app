@@ -1,5 +1,4 @@
 import rateLimit from 'express-rate-limit';
-import { getRedisClient } from '../config/redis';
 
 // Strict limiter for auth endpoints
 export const authLimiter = rateLimit({
