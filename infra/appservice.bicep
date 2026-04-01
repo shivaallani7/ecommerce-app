@@ -58,7 +58,7 @@ resource backendApp 'Microsoft.Web/sites@2023-01-01' = {
         { name: 'ALLOWED_ORIGINS', value: 'https://${frontendAppName}.azurewebsites.net' }
         { name: 'AAD_B2C_TENANT_NAME', value: b2cTenantName }
         // Database connection (individual params used by Sequelize)
-        { name: 'DB_SERVER', value: '${sqlServerName}.${az.environment().suffixes.sqlServerHostname}' }
+        { name: 'DB_SERVER', value: '${sqlServerName}${az.environment().suffixes.sqlServerHostname}' }
         { name: 'DB_NAME', value: 'ecommerce' }
         { name: 'DB_USER', value: 'sqladmin' }
         { name: 'DB_PASSWORD', value: '${kvRef}db-password)' }
