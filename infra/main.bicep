@@ -85,6 +85,7 @@ module appService 'appservice.bicep' = {
     location: location
     environment: environment
     kvName: kvName
+    sqlServerName: 'sql-${suffix}'
     b2cTenantName: b2cTenantName
     stripePublishableKey: stripePublishableKey
   }

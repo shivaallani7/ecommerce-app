@@ -33,8 +33,8 @@ export function getSequelize(): Sequelize {
       },
       dialectOptions: {
         options: {
-          encrypt: false,
-          trustServerCertificate: true,
+          encrypt: true,
+          trustServerCertificate: false,
           enableArithAbort: true,
           requestTimeout: 30000,
         },

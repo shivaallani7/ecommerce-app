@@ -4,6 +4,7 @@ param frontendAppName string
 param location string
 param environment string
 param kvName string
+param sqlServerName string
 param b2cTenantName string
 param stripePublishableKey string
 
@@ -56,6 +57,11 @@ resource backendApp 'Microsoft.Web/sites@2023-01-01' = {
         { name: 'AZURE_KEY_VAULT_URL', value: 'https://${kvName}.vault.azure.net/' }
         { name: 'ALLOWED_ORIGINS', value: 'https://${frontendAppName}.azurewebsites.net' }
         { name: 'AAD_B2C_TENANT_NAME', value: b2cTenantName }
+        // Database connection (individual params used by Sequelize)
+        { name: 'DB_SERVER', value: '${sqlServerName}.${az.environment().suffixes.sqlServerHostname}' }
+        { name: 'DB_NAME', value: 'ecommerce' }
+        { name: 'DB_USER', value: 'sqladmin' }
+        { name: 'DB_PASSWORD', value: '${kvRef}db-password)' }
         // Secrets resolved from Key Vault at runtime via managed identity
         { name: 'JWT_SECRET', value: '${kvRef}jwt-secret)' }
         { name: 'JWT_REFRESH_SECRET', value: '${kvRef}jwt-refresh-secret)' }
