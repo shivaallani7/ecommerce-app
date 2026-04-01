@@ -1,30 +1,40 @@
-import appInsights from 'applicationinsights';
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let appInsights: any = null;
 let initialized = false;
 
 export function initAppInsights(): void {
   if (!env.azure.appInsightsConnectionString || initialized) return;
 
-  appInsights
-    .setup(env.azure.appInsightsConnectionString)
-    .setAutoDependencyCorrelation(true)
-    .setAutoCollectRequests(true)
-    .setAutoCollectPerformance(true, true)
-    .setAutoCollectExceptions(true)
-    .setAutoCollectDependencies(true)
-    .setAutoCollectConsole(true, true)
-    .setUseDiskRetryCaching(true)
-    .setSendLiveMetrics(true)
-    .start();
+  try {
+    // Dynamic require so the app starts even if the module is missing
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    appInsights = require('applicationinsights');
 
-  initialized = true;
-  logger.info('Azure Application Insights initialized.');
+    appInsights
+      .setup(env.azure.appInsightsConnectionString)
+      .setAutoDependencyCorrelation(true)
+      .setAutoCollectRequests(true)
+      .setAutoCollectPerformance(true, true)
+      .setAutoCollectExceptions(true)
+      .setAutoCollectDependencies(true)
+      .setAutoCollectConsole(true, true)
+      .setUseDiskRetryCaching(true)
+      .setSendLiveMetrics(true)
+      .start();
+
+    initialized = true;
+    logger.info('Azure Application Insights initialized.');
+  } catch {
+    logger.warn('applicationinsights module not available — telemetry disabled.');
+  }
 }
 
-function getClient(): appInsights.TelemetryClient | null {
-  if (!initialized) return null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getClient(): any | null {
+  if (!initialized || !appInsights) return null;
   return appInsights.defaultClient;
 }
 
