@@ -14,7 +14,7 @@ export function errorHandler(
     res.status(err.statusCode).json({
       success: false,
       message: err.message,
-      ...(err.details && { details: err.details }),
+      ...(err.details != null ? { details: err.details } : {}),
     });
     return;
   }

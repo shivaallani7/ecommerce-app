@@ -96,7 +96,7 @@ export async function getSalesReport(req: Request, res: Response): Promise<void>
       [fn('COUNT', col('id')), 'orderCount'],
       [fn('SUM', col('totalAmount')), 'revenue'],
     ],
-    group: [literal("CONVERT(date, createdAt)")],
+    group: [literal("CONVERT(date, createdAt)") as unknown as string],
     order: [[literal("CONVERT(date, createdAt)"), 'ASC']],
     raw: true,
   });

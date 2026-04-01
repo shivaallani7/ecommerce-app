@@ -41,5 +41,5 @@ export function trackMetric(name: string, value: number): void {
 }
 
 export function trackPageView(name: string, url?: string): void {
-  getClient()?.trackPageView({ name, url });
+  getClient()?.trackPageView({ id: name, name, url });
 }
