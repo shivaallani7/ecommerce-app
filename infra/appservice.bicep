@@ -53,6 +53,7 @@ resource backendApp 'Microsoft.Web/sites@2023-01-01' = {
       appSettings: [
         { name: 'NODE_ENV', value: environment == 'prod' ? 'production' : environment }
         { name: 'PORT', value: '8080' }
+        { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'false' }
         { name: 'WEBSITE_NODE_DEFAULT_VERSION', value: '~20' }
         { name: 'AZURE_KEY_VAULT_URL', value: 'https://${kvName}.vault.azure.net/' }
         { name: 'ALLOWED_ORIGINS', value: 'https://${frontendAppName}.azurewebsites.net' }
