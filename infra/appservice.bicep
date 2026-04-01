@@ -21,8 +21,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   location: location
   tags: tags
   sku: {
-    name: environment == 'prod' ? 'P2v3' : environment == 'staging' ? 'B1' : 'F1'
-    tier: environment == 'prod' ? 'PremiumV3' : environment == 'staging' ? 'Basic' : 'Free'
+    name: environment == 'prod' ? 'P2v3' : 'B1'
+    tier: environment == 'prod' ? 'PremiumV3' : 'Basic'
   }
   kind: 'linux'
   properties: {
