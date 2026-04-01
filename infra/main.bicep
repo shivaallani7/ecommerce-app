@@ -28,7 +28,7 @@ param stripePublishableKey string = ''
 
 // ── Derived naming ───────────────────────────────────────────────────────────
 var suffix = '${appName}-${environment}'
-var kvName = 'kv-${suffix}'
+var kvName = 'kv-${suffix}-v2'
 
 // ── Modules ──────────────────────────────────────────────────────────────────
 module keyVault 'keyvault.bicep' = {
