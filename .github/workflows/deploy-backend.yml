@@ -100,7 +100,7 @@ jobs:
           path: ./deploy
 
       - name: Install prod dependencies
-        working-directory: ./deploy/backend
+        working-directory: ./deploy
         run: npm ci --omit=dev
 
       - name: Login to Azure
@@ -113,7 +113,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_BACKEND_APP_NAME_DEV }}
-          package: ./deploy/backend/backend
+          package: ./deploy/backend
 
   # ─── Deploy to Staging ───────────────────────────────────────────────────────
   deploy-staging:
@@ -133,7 +133,7 @@ jobs:
           path: ./deploy
 
       - name: Install prod dependencies
-        working-directory: ./deploy/backend
+        working-directory: ./deploy
         run: npm ci --omit=dev
 
       - name: Login to Azure
@@ -146,7 +146,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_BACKEND_APP_NAME_STAGING }}
-          package: ./deploy/backend
+          package: ./deploy
 
   # ─── Deploy to Production (manual approval) ──────────────────────────────────
   deploy-prod:
@@ -166,7 +166,7 @@ jobs:
           path: ./deploy
 
       - name: Install prod dependencies
-        working-directory: ./deploy/backend
+        working-directory: ./deploy
         run: npm ci --omit=dev
 
       - name: Login to Azure
@@ -179,4 +179,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_BACKEND_APP_NAME_PROD }}
-          package: ./deploy/backend
+          package: ./deploy
