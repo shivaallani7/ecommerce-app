@@ -1,93 +1,15 @@
 param cdnProfileName string
-param location string
-param storageAccountName string
-param storageContainerName string
+param storageContainerName string = ''
 
-var endpointName = '${cdnProfileName}-ep'
-
+// Azure CDN from Microsoft (classic) is deprecated.
+// Using Azure Front Door Standard for new deployments.
 resource cdnProfile 'Microsoft.Cdn/profiles@2023-05-01' = {
   name: cdnProfileName
-  location: location
+  location: 'global'
   sku: {
-    name: 'Standard_Microsoft'
+    name: 'Standard_AzureFrontDoor'
   }
 }
 
-resource cdnEndpoint 'Microsoft.Cdn/profiles/endpoints@2023-05-01' = {
-  parent: cdnProfile
-  name: endpointName
-  location: location
-  properties: {
-    originHostHeader: '${storageAccountName}.blob.core.windows.net'
-    isHttpAllowed: false
-    isHttpsAllowed: true
-    queryStringCachingBehavior: 'UseQueryString'
-    origins: [
-      {
-        name: 'blob-origin'
-        properties: {
-          hostName: '${storageAccountName}.blob.core.windows.net'
-          httpsPort: 443
-          originHostHeader: '${storageAccountName}.blob.core.windows.net'
-        }
-      }
-    ]
-    deliveryPolicy: {
-      rules: [
-        {
-          name: 'EnforceHTTPS'
-          order: 1
-          conditions: [
-            {
-              name: 'RequestScheme'
-              parameters: {
-                typeName: 'DeliveryRuleRequestSchemeConditionParameters'
-                operator: 'Equal'
-                matchValues: ['HTTP']
-              }
-            }
-          ]
-          actions: [
-            {
-              name: 'UrlRedirect'
-              parameters: {
-                typeName: 'DeliveryRuleUrlRedirectActionParameters'
-                redirectType: 'PermanentRedirect'
-                destinationProtocol: 'Https'
-              }
-            }
-          ]
-        }
-        {
-          name: 'CacheImages'
-          order: 2
-          conditions: [
-            {
-              name: 'UrlFileExtension'
-              parameters: {
-                typeName: 'DeliveryRuleUrlFileExtensionMatchConditionParameters'
-                operator: 'Equal'
-                matchValues: ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
-                transforms: ['Lowercase']
-              }
-            }
-          ]
-          actions: [
-            {
-              name: 'CacheExpiration'
-              parameters: {
-                typeName: 'DeliveryRuleCacheExpirationActionParameters'
-                cacheBehavior: 'SetIfMissing'
-                cacheType: 'All'
-                cacheDuration: '7.00:00:00' // 7 days
-              }
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-
-output cdnEndpoint string = 'https://${cdnEndpoint.properties.hostName}'
+output cdnEndpoint string = 'https://${cdnProfile.name}.azurefd.net'
 output cdnProfileName string = cdnProfile.name

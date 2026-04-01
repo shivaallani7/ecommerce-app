@@ -95,8 +95,6 @@ module cdn 'cdn.bicep' = {
   name: 'cdn'
   params: {
     cdnProfileName: 'cdn-${suffix}'
-    location: location
-    storageAccountName: storage.outputs.storageAccountName
     storageContainerName: storage.outputs.containerName
   }
   dependsOn: [storage]
