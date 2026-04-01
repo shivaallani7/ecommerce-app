@@ -113,7 +113,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_BACKEND_APP_NAME_DEV }}
-          package: ./deploy/backend
+          package: ./deploy
 
   # ─── Deploy to Staging ───────────────────────────────────────────────────────
   deploy-staging:
