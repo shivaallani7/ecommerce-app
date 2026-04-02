@@ -14,10 +14,10 @@ export function getSequelize(): Sequelize {
   if (!sequelize) {
     sequelize = new Sequelize({
       dialect: 'mssql',
-      host: env.db.server,
-      database: env.db.name,
-      username: env.db.user,
-      password: env.db.password,
+      host: process.env.DB_SERVER || env.db.server,
+      database: process.env.DB_NAME || env.db.name,
+      username: process.env.DB_USER || env.db.user,
+      password: process.env.DB_PASSWORD || env.db.password,
       port: 1433,
       logging: env.isProduction ? false : (msg) => logger.debug(msg),
       models: [User, Category, Product, Order, OrderItem, Review],
@@ -45,6 +45,8 @@ export function getSequelize(): Sequelize {
 }
 
 export async function connectDatabase(): Promise<void> {
+  // Reset sequelize instance so it picks up Key Vault secrets loaded after module init
+  sequelize = undefined as unknown as Sequelize;
   const db = getSequelize();
   try {
     await db.authenticate();

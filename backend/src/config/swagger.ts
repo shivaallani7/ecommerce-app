@@ -86,7 +86,9 @@ const options: swaggerJsdoc.Options = {
     },
     security: [{ BearerAuth: [] }],
   },
-  apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
+  apis: process.env.NODE_ENV === 'production'
+    ? ['./dist/routes/*.js', './dist/controllers/*.js']
+    : ['./src/routes/*.ts', './src/controllers/*.ts'],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

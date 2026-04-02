@@ -90,9 +90,13 @@ async function bootstrap(): Promise<void> {
   // Redis (eager connect)
   getRedisClient();
 
-  // Ensure Azure Blob container exists
+  // Ensure Azure Blob container exists (non-fatal)
   if (env.azure.storageConnectionString) {
-    await ensureContainerExists();
+    try {
+      await ensureContainerExists();
+    } catch (err) {
+      logger.warn('Blob storage container setup failed (non-fatal):', err);
+    }
   }
 
   app.listen(env.port, () => {

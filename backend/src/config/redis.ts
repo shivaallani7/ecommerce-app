@@ -11,8 +11,8 @@ export function getRedisClient(): Redis {
         password: env.redis.password || undefined,
         tls: env.isProduction ? {} : undefined,
         maxRetriesPerRequest: 3,
-        enableReadyCheck: true,
-        lazyConnect: false,
+        enableReadyCheck: false,
+        lazyConnect: true,
       });
     } else {
       // Fallback for local dev without Redis
