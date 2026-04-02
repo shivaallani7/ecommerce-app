@@ -100,6 +100,7 @@ jobs:
       - name: Prepare standalone package
         run: |
           mkdir -p ./deploy/.next/standalone/.next
+          mkdir -p ./deploy/public
           cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
           cp -r ./deploy/public ./deploy/.next/standalone/public
 
@@ -135,6 +136,7 @@ jobs:
       - name: Prepare standalone package
         run: |
           mkdir -p ./deploy/.next/standalone/.next
+          mkdir -p ./deploy/public
           cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
           cp -r ./deploy/public ./deploy/.next/standalone/public
 
@@ -167,6 +169,7 @@ jobs:
       - name: Prepare standalone package
         run: |
           mkdir -p ./deploy/.next/standalone/.next
+          mkdir -p ./deploy/public
           cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
           cp -r ./deploy/public ./deploy/.next/standalone/public
 
