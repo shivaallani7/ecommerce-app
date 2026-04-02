@@ -70,14 +70,18 @@ jobs:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL_DEV }}
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
 
+      - name: Prepare deploy package
+        run: |
+          mkdir -p /tmp/frontend-deploy
+          cp -r .next/standalone/. /tmp/frontend-deploy/
+          cp -r .next/static /tmp/frontend-deploy/.next/static
+          cp -r public/. /tmp/frontend-deploy/public 2>/dev/null || true
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: |
-            frontend/.next/standalone
-            frontend/.next/static
-            frontend/public
+          path: /tmp/frontend-deploy
           retention-days: 1
 
   # ─── Deploy to Dev ───────────────────────────────────────────────────────────
@@ -97,12 +101,6 @@ jobs:
           name: frontend-build
           path: ./deploy
 
-      - name: Prepare standalone package
-        run: |
-          mkdir -p ./deploy/.next/standalone/.next
-          mkdir -p ./deploy/public
-          cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
-          cp -r ./deploy/public ./deploy/.next/standalone/public
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -114,7 +112,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_DEV }}
-          package: ./deploy/.next/standalone
+          package: ./deploy
 
   # ─── Deploy to Staging ───────────────────────────────────────────────────────
   deploy-staging:
@@ -133,12 +131,6 @@ jobs:
           name: frontend-build
           path: ./deploy
 
-      - name: Prepare standalone package
-        run: |
-          mkdir -p ./deploy/.next/standalone/.next
-          mkdir -p ./deploy/public
-          cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
-          cp -r ./deploy/public ./deploy/.next/standalone/public
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -150,7 +142,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_STAGING }}
-          package: ./deploy/.next/standalone
+          package: ./deploy
 
   # ─── Deploy to Production ────────────────────────────────────────────────────
   deploy-prod:
@@ -166,12 +158,6 @@ jobs:
           name: frontend-build
           path: ./deploy
 
-      - name: Prepare standalone package
-        run: |
-          mkdir -p ./deploy/.next/standalone/.next
-          mkdir -p ./deploy/public
-          cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
-          cp -r ./deploy/public ./deploy/.next/standalone/public
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -183,4 +169,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_PROD }}
-          package: ./deploy/.next/standalone
+          package: ./deploy
