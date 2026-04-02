@@ -99,8 +99,8 @@ jobs:
 
       - name: Prepare standalone package
         run: |
-          cp -r ./deploy/frontend/.next/static ./deploy/frontend/.next/standalone/.next/static
-          cp -r ./deploy/frontend/public ./deploy/frontend/.next/standalone/public
+          cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
+          cp -r ./deploy/public ./deploy/.next/standalone/public
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -112,7 +112,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_DEV }}
-          package: ./deploy/frontend/.next/standalone
+          package: ./deploy/.next/standalone
 
   # ─── Deploy to Staging ───────────────────────────────────────────────────────
   deploy-staging:
@@ -133,8 +133,8 @@ jobs:
 
       - name: Prepare standalone package
         run: |
-          cp -r ./deploy/frontend/.next/static ./deploy/frontend/.next/standalone/.next/static
-          cp -r ./deploy/frontend/public ./deploy/frontend/.next/standalone/public
+          cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
+          cp -r ./deploy/public ./deploy/.next/standalone/public
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -146,7 +146,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_STAGING }}
-          package: ./deploy/frontend/.next/standalone
+          package: ./deploy/.next/standalone
 
   # ─── Deploy to Production ────────────────────────────────────────────────────
   deploy-prod:
@@ -164,8 +164,8 @@ jobs:
 
       - name: Prepare standalone package
         run: |
-          cp -r ./deploy/frontend/.next/static ./deploy/frontend/.next/standalone/.next/static
-          cp -r ./deploy/frontend/public ./deploy/frontend/.next/standalone/public
+          cp -r ./deploy/.next/static ./deploy/.next/standalone/.next/static
+          cp -r ./deploy/public ./deploy/.next/standalone/public
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -177,4 +177,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_PROD }}
-          package: ./deploy/frontend/.next/standalone
+          package: ./deploy/.next/standalone
