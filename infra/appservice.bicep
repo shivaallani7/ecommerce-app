@@ -55,6 +55,7 @@ resource backendApp 'Microsoft.Web/sites@2023-01-01' = {
         { name: 'PORT', value: '8080' }
         { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'true' }
         { name: 'ENABLE_ORYX_BUILD', value: 'true' }
+        { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '0' }
         { name: 'WEBSITE_NODE_DEFAULT_VERSION', value: '~20' }
         { name: 'AZURE_KEY_VAULT_URL', value: 'https://${kvName}.vault.azure.net/' }
         { name: 'ALLOWED_ORIGINS', value: 'https://${frontendAppName}.azurewebsites.net' }
@@ -119,6 +120,9 @@ resource frontendApp 'Microsoft.Web/sites@2023-01-01' = {
         { name: 'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', value: stripePublishableKey }
         { name: 'NEXT_PUBLIC_AAD_B2C_TENANT', value: b2cTenantName }
         { name: 'PORT', value: '3000' }
+        { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'false' }
+        { name: 'ENABLE_ORYX_BUILD', value: 'false' }
+        { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '0' }
       ]
     }
   }

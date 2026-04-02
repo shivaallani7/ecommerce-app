@@ -75,11 +75,9 @@ jobs:
         with:
           name: frontend-build
           path: |
-            frontend/.next
+            frontend/.next/standalone
+            frontend/.next/static
             frontend/public
-            frontend/package.json
-            frontend/package-lock.json
-            frontend/next.config.js
           retention-days: 1
 
   # ─── Deploy to Dev ───────────────────────────────────────────────────────────
@@ -99,6 +97,11 @@ jobs:
           name: frontend-build
           path: ./deploy
 
+      - name: Prepare standalone package
+        run: |
+          cp -r ./deploy/frontend/.next/static ./deploy/frontend/.next/standalone/.next/static
+          cp -r ./deploy/frontend/public ./deploy/frontend/.next/standalone/public
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -109,7 +112,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_DEV }}
-          package: ./deploy
+          package: ./deploy/frontend/.next/standalone
 
   # ─── Deploy to Staging ───────────────────────────────────────────────────────
   deploy-staging:
@@ -128,6 +131,11 @@ jobs:
           name: frontend-build
           path: ./deploy
 
+      - name: Prepare standalone package
+        run: |
+          cp -r ./deploy/frontend/.next/static ./deploy/frontend/.next/standalone/.next/static
+          cp -r ./deploy/frontend/public ./deploy/frontend/.next/standalone/public
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -138,7 +146,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_STAGING }}
-          package: ./deploy
+          package: ./deploy/frontend/.next/standalone
 
   # ─── Deploy to Production ────────────────────────────────────────────────────
   deploy-prod:
@@ -154,6 +162,11 @@ jobs:
           name: frontend-build
           path: ./deploy
 
+      - name: Prepare standalone package
+        run: |
+          cp -r ./deploy/frontend/.next/static ./deploy/frontend/.next/standalone/.next/static
+          cp -r ./deploy/frontend/public ./deploy/frontend/.next/standalone/public
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -164,4 +177,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_FRONTEND_APP_NAME_PROD }}
-          package: ./deploy
+          package: ./deploy/frontend/.next/standalone
