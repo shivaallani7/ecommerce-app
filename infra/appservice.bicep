@@ -119,7 +119,9 @@ resource frontendApp 'Microsoft.Web/sites@2023-01-01' = {
         { name: 'NEXT_PUBLIC_API_URL', value: 'https://${backendAppName}.azurewebsites.net/api/v1' }
         { name: 'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', value: stripePublishableKey }
         { name: 'NEXT_PUBLIC_AAD_B2C_TENANT', value: b2cTenantName }
-        { name: 'PORT', value: '3000' }
+        { name: 'PORT', value: '8080' }
+        { name: 'WEBSITES_PORT', value: '8080' }
+        { name: 'WEBSITE_NODE_DEFAULT_VERSION', value: '~20' }
         { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'false' }
         { name: 'ENABLE_ORYX_BUILD', value: 'false' }
         { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '0' }
